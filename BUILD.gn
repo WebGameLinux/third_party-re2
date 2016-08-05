@@ -1,0 +1,167 @@
+# Copyright 2016 The Fuchsia Authors.  All Rights Reserved.
+# Use of this source code is governed by a BSD-style
+# license that can be found in the LICENSE file.
+
+config("re2_config") {
+  include_dirs = [ "." ]
+}
+
+config("re2_warnings") {
+  cflags = [
+    "-Wall",
+    "-Wextra",
+    "-Wno-missing-field-initializers",
+    "-Wno-unused-parameter",
+  ]
+}
+
+static_library("re2") {
+  sources = [
+    "re2/bitmap256.h",
+    "re2/bitstate.cc",
+    "re2/compile.cc",
+    "re2/dfa.cc",
+    "re2/filtered_re2.cc",
+    "re2/filtered_re2.h",
+    "re2/mimics_pcre.cc",
+    "re2/nfa.cc",
+    "re2/onepass.cc",
+    "re2/parse.cc",
+    "re2/perl_groups.cc",
+    "re2/prefilter.cc",
+    "re2/prefilter.h",
+    "re2/prefilter_tree.cc",
+    "re2/prefilter_tree.h",
+    "re2/prog.cc",
+    "re2/prog.h",
+    "re2/re2.cc",
+    "re2/re2.h",
+    "re2/regexp.cc",
+    "re2/regexp.h",
+    "re2/set.cc",
+    "re2/set.h",
+    "re2/simplify.cc",
+    "re2/stringpiece.cc",
+    "re2/stringpiece.h",
+    "re2/tostring.cc",
+    "re2/unicode_casefold.cc",
+    "re2/unicode_casefold.h",
+    "re2/unicode_groups.cc",
+    "re2/unicode_groups.h",
+    "re2/walker-inl.h",
+    "util/flags.h",
+    "util/hash.cc",
+    "util/logging.cc",
+    "util/logging.h",
+    "util/mutex.h",
+    "util/rune.cc",
+    "util/sparse_array.h",
+    "util/sparse_set.h",
+    "util/stringprintf.cc",
+    "util/strutil.cc",
+    "util/utf.h",
+    "util/util.h",
+    "util/valgrind.cc",
+    "util/valgrind.h",
+  ]
+  public_configs = [ ":re2_config" ]
+  configs -= [ "//build/config:default_warnings" ]
+  configs += [ ":re2_warnings" ]
+}
+
+source_set("testing") {
+  testonly = true
+  sources = [
+    "re2/testing/backtrack.cc",
+    "re2/testing/dump.cc",
+    "re2/testing/exhaustive_tester.cc",
+    "re2/testing/exhaustive_tester.h",
+    "re2/testing/null_walker.cc",
+    "re2/testing/regexp_generator.cc",
+    "re2/testing/regexp_generator.h",
+    "re2/testing/string_generator.cc",
+    "re2/testing/string_generator.h",
+    "re2/testing/tester.cc",
+    "re2/testing/tester.h",
+    "util/benchmark.h",
+    "util/pcre.cc",
+    "util/pcre.h",
+    "util/random.cc",
+    "util/random.h",
+    "util/test.h",
+    "util/thread.cc",
+    "util/thread.h",
+  ]
+  public_deps = [
+    ":re2",
+  ]
+  configs -= [ "//build/config:default_warnings" ]
+  configs += [ ":re2_warnings" ]
+}
+
+executable("re2_tests") {
+  testonly = true
+  sources = [
+    "re2/testing/charclass_test.cc",
+    "re2/testing/compile_test.cc",
+    "re2/testing/filtered_re2_test.cc",
+    "re2/testing/mimics_pcre_test.cc",
+    "re2/testing/parse_test.cc",
+    "re2/testing/possible_match_test.cc",
+    "re2/testing/re2_arg_test.cc",
+    "re2/testing/re2_test.cc",
+    "re2/testing/regexp_test.cc",
+    "re2/testing/required_prefix_test.cc",
+    "re2/testing/search_test.cc",
+    "re2/testing/set_test.cc",
+    "re2/testing/simplify_test.cc",
+    "re2/testing/string_generator_test.cc",
+    "util/test.cc",
+  ]
+  deps = [
+    ":testing",
+  ]
+  configs -= [ "//build/config:default_warnings" ]
+  configs += [ ":re2_warnings" ]
+}
+
+executable("re2_slow_tests") {
+  testonly = true
+  sources = [
+    "re2/testing/dfa_test.cc",
+    "re2/testing/exhaustive1_test.cc",
+    "re2/testing/exhaustive2_test.cc",
+    "re2/testing/exhaustive3_test.cc",
+    "re2/testing/exhaustive_test.cc",
+    "re2/testing/random_test.cc",
+    "util/test.cc",
+  ]
+  deps = [
+    ":testing",
+  ]
+  configs -= [ "//build/config:default_warnings" ]
+  configs += [ ":re2_warnings" ]
+}
+
+source_set("benchmark") {
+  testonly = true
+  sources = [
+    "util/benchmark.cc",
+  ]
+  deps = [
+    ":re2",
+  ]
+  public_deps = [
+    ":testing",
+  ]
+}
+
+executable("regexp_benchmark") {
+  testonly = true
+  sources = [
+    "re2/testing/regexp_benchmark.cc",
+  ]
+  deps = [
+    ":benchmark",
+  ]
+}
