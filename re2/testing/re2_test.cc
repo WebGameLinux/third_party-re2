@@ -735,6 +735,9 @@ TEST(RE2, FullMatchTypedNullArg) {
 // the number being parsed.
 // This implementation requires mmap(2) et al. and thus cannot
 // be used unless they are available.
+// TODO(Fuchsia): This test fails on fuchsia due to munmap() of part of a region
+// not being supported, see MG-215
+#ifndef __Fuchsia__
 TEST(RE2, NULTerminated) {
 #if defined(_POSIX_MAPPED_FILES) && _POSIX_MAPPED_FILES > 0
   char *v;
@@ -756,6 +759,7 @@ TEST(RE2, NULTerminated) {
   CHECK_EQ(x, 1);
 #endif
 }
+#endif  // __Fuchsia__
 
 TEST(RE2, FullMatchTypeTests) {
   // Type tests
