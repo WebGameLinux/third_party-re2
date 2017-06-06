@@ -2,6 +2,8 @@
 # Use of this source code is governed by a BSD-style
 # license that can be found in the LICENSE file.
 
+import("//packages/package.gni")
+
 config("re2_config") {
   include_dirs = [ "." ]
 }
@@ -99,8 +101,10 @@ source_set("testing") {
   configs += [ ":re2_warnings" ]
 }
 
-executable("re2_tests") {
+executable("re2_tests_bin") {
   testonly = true
+  output_name = "re2_tests"
+
   sources = [
     "re2/testing/charclass_test.cc",
     "re2/testing/compile_test.cc",
@@ -163,5 +167,29 @@ executable("regexp_benchmark") {
   ]
   deps = [
     ":benchmark",
+  ]
+}
+
+package("re2_tests") {
+  testonly = true
+
+  deps = [
+    ":re2_slow_tests",
+    ":re2_tests_bin",
+    ":regexp_benchmark",
+  ]
+
+  binaries = [
+    {
+      name = "re2_tests"
+    },
+
+    {
+      name = "re2_slow_tests"
+    },
+
+    {
+      name = "regexp_benchmark"
+    },
   ]
 }
