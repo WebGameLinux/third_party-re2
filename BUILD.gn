@@ -13,6 +13,7 @@ config("re2_warnings") {
     "-Wall",
     "-Wextra",
     "-Wno-missing-field-initializers",
+    "-Wno-tautological-unsigned-enum-zero-compare",
     "-Wno-tautological-unsigned-zero-compare",
     "-Wno-unused-parameter",
   ]
